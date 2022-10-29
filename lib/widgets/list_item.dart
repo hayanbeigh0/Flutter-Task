@@ -27,6 +27,7 @@ class _ListItemState extends State<ListItem> {
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => TrackDetailScreen(
+            fromBookmarkList: false,
             trackId: widget.state.trackLists.message.body
                 .trackList[widget.index].track.trackId
                 .toString(),

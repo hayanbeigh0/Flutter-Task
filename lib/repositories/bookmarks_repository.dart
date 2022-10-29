@@ -6,8 +6,13 @@ class BookmarksRepository {
     _bookmarkedList.add(bookmark);
   }
 
-  removeFromBookmark(TrackList bookmark) {
-    _bookmarkedList.remove(bookmark);
+  removeFromBookmarkUsingTrackId(TrackList bookmark) {
+    _bookmarkedList.removeWhere(
+        (element) => element.track.trackId == bookmark.track.trackId);
+  }
+
+  removeFromBookmarkUsingIndex(int index) {
+    _bookmarkedList.removeAt(index);
   }
 
   List<TrackList> get bookmarks => _bookmarkedList;

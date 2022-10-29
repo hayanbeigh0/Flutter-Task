@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:music_app/logic/blocs/bookmarks/bookmarks_bloc.dart';
-import 'package:music_app/models/track_list.dart';
+import 'package:music_app/repositories/bookmarks_repository.dart';
 import 'package:music_app/screens/track_detail_screen.dart';
-
-import '../logic/blocs/track_list/track_list_bloc.dart';
-import '../widgets/list_item.dart';
 
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
@@ -20,17 +17,15 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Bookmarks')),
       body: SafeArea(
-        child: BlocBuilder<TrackListBloc, TrackListState>(
+        child: BlocBuilder<BookmarksBloc, BookmarksState>(
           builder: (context, state) {
-            if (state is TrackListLoading) {
+            if (state is BookmarksLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
-            if (state is TrackListLoaded) {
-              var list = BlocProvider.of<BookmarksBloc>(context)
-                  .bookmarksRepository
-                  .bookmarks;
+            if (state is BookmarksLoaded) {
+              var list = state.loadedBookmarks;
               // var list = state.trackLists.message.body.trackList
               //     .where((element) => element.track.bookmarked == true)
               //     .toList();
@@ -48,22 +43,18 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => TrackDetailScreen(
-                            trackId: state.trackLists.message.body.trackList
-                                .firstWhere((element) =>
-                                    element.track.trackId ==
-                                    list[index].track.trackId)
-                                .track
-                                .trackId
+                            fromBookmarkList: true,
+                            trackId: state.loadedBookmarks[index].track.trackId
                                 .toString(),
                             state: state,
-                            index: state.trackLists.message.body.trackList
-                                .indexWhere((element) =>
-                                    element.track.trackId ==
-                                    list[index].track.trackId),
+                            index: index,
                           ),
                         ),
                       );
+                      BlocProvider.of<BookmarksBloc>(context)
+                          .add(LoadBookmarks(BookmarksRepository().bookmarks));
                       setState(() {});
+                      print(state.loadedBookmarks.length);
                     },
                     child: Card(
                       elevation: 4,
@@ -72,8 +63,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                       ),
                       child: ListTile(
                         title: Text(
-                          state.trackLists.message.body.trackList[index].track
-                              .trackName,
+                          state.loadedBookmarks[index].track.trackName,
                           style: const TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.w500,

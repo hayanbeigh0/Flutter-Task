@@ -16,8 +16,11 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
     on<AddToBookmarks>((event, emit) {
       bookmarksRepository.addToBookmarks(event.bookmark);
     });
-    on<RemoveFromBookmarks>((event, emit) {
-      bookmarksRepository.removeFromBookmark(event.bookmark);
+    on<RemoveFromBookmarksUsingIndex>((event, emit) {
+      bookmarksRepository.removeFromBookmarkUsingIndex(event.bookmark);
+    });
+    on<RemoveFromBookmarksUsingTrackId>((event, emit) {
+      bookmarksRepository.removeFromBookmarkUsingTrackId(event.bookmark);
     });
     on<LoadBookmarks>(
       (event, emit) {

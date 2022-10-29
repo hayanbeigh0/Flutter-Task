@@ -11,10 +11,19 @@ class AddToBookmarks extends BookmarksEvent {
   List<Object?> get props => [bookmark];
 }
 
-class RemoveFromBookmarks extends BookmarksEvent {
+class RemoveFromBookmarksUsingIndex extends BookmarksEvent {
+  final int bookmark;
+
+  RemoveFromBookmarksUsingIndex(this.bookmark);
+
+  @override
+  List<Object?> get props => [bookmark];
+}
+
+class RemoveFromBookmarksUsingTrackId extends BookmarksEvent {
   final TrackList bookmark;
 
-  RemoveFromBookmarks(this.bookmark);
+  RemoveFromBookmarksUsingTrackId(this.bookmark);
 
   @override
   List<Object?> get props => [bookmark];

@@ -14,10 +14,12 @@ class TrackDetailScreen extends StatefulWidget {
     required this.trackId,
     required this.state,
     required this.index,
+    required this.fromBookmarkList,
   });
   final String trackId;
-  final TrackListState state;
+  final state;
   final int index;
+  final bool fromBookmarkList;
 
   @override
   State<TrackDetailScreen> createState() => _TrackDetailScreenState();
@@ -81,7 +83,6 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                       BookmarksState>(
                                     listener: (context, bookmarkState) {},
                                     builder: (context, bookmarkState) {
-                                      print(widget.index);
                                       if (bookmarkState is BookmarksLoaded) {
                                         if (bookmarkState
                                                 .loadedBookmarks.isNotEmpty &&
@@ -109,21 +110,27 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                           ),
                                           onPressed: () {
                                             if (bookmarked) {
+                                              print(widget.index);
                                               BlocProvider.of<BookmarksBloc>(
                                                       context)
                                                   .add(
-                                                RemoveFromBookmarks(
-                                                  trackListState
-                                                      .trackLists
-                                                      .message
-                                                      .body
-                                                      .trackList[widget.index],
-                                                ),
+                                                widget.fromBookmarkList
+                                                    ? RemoveFromBookmarksUsingIndex(
+                                                        widget.index)
+                                                    : RemoveFromBookmarksUsingTrackId(
+                                                        trackListState
+                                                                .trackLists
+                                                                .message
+                                                                .body
+                                                                .trackList[
+                                                            widget.index],
+                                                      ),
                                               );
-                                              print('removed');
+                                              // print('removed');
                                               setState(() {
                                                 bookmarked = false;
                                               });
+                                              // Navigator.of(context).pop();
                                             } else {
                                               BlocProvider.of<BookmarksBloc>(
                                                       context)
@@ -136,7 +143,7 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                                       .trackList[widget.index],
                                                 ),
                                               );
-                                              print('added');
+                                              // print('added');
                                               setState(() {
                                                 bookmarked = true;
                                               });
@@ -158,7 +165,7 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                     },
                                   );
                                 }
-                                return Text('Loading');
+                                return const Text('Loading');
                               },
                             )
                           ],
