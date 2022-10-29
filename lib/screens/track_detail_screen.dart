@@ -73,16 +73,23 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                             ),
                             BlocBuilder<TrackListBloc, TrackListState>(
                               builder: (context, trackListState) {
+                                BlocProvider.of<BookmarksBloc>(context).add(
+                                    LoadBookmarks(
+                                        BookmarksRepository().bookmarks));
                                 if (trackListState is TrackListLoaded) {
                                   return BlocConsumer<BookmarksBloc,
                                       BookmarksState>(
-                                    listener: (context, bookmarkState) {
+                                    listener: (context, bookmarkState) {},
+                                    builder: (context, bookmarkState) {
+                                      print(widget.index);
                                       if (bookmarkState is BookmarksLoaded) {
-                                        if (bookmarkState.loadedBookmarks.any(
-                                            (element) => identical(
-                                                state.trackDetails.message.body
-                                                    .track.trackId,
-                                                element.track.trackId))) {
+                                        if (bookmarkState
+                                                .loadedBookmarks.isNotEmpty &&
+                                            bookmarkState.loadedBookmarks.any(
+                                                (element) =>
+                                                    element.track.trackId ==
+                                                    state.trackDetails.message
+                                                        .body.track.trackId)) {
                                           bookmarked = true;
                                           print(bookmarked);
                                         } else {
@@ -90,9 +97,7 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                           print(bookmarked);
                                         }
                                       }
-                                    },
-                                    builder: (context, bookmarkState) {
-                                      if (state is BookmarksLoaded) {
+                                      if (bookmarkState is BookmarksLoaded) {
                                         return IconButton(
                                           icon: Icon(
                                             bookmarked
@@ -106,23 +111,35 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                             if (bookmarked) {
                                               BlocProvider.of<BookmarksBloc>(
                                                       context)
-                                                  .add(RemoveFromBookmarks(
-                                                      trackListState
-                                                              .trackLists
-                                                              .message
-                                                              .body
-                                                              .trackList[
-                                                          widget.index]));
+                                                  .add(
+                                                RemoveFromBookmarks(
+                                                  trackListState
+                                                      .trackLists
+                                                      .message
+                                                      .body
+                                                      .trackList[widget.index],
+                                                ),
+                                              );
+                                              print('removed');
+                                              setState(() {
+                                                bookmarked = false;
+                                              });
                                             } else {
                                               BlocProvider.of<BookmarksBloc>(
                                                       context)
-                                                  .add(AddToBookmarks(
-                                                      trackListState
-                                                              .trackLists
-                                                              .message
-                                                              .body
-                                                              .trackList[
-                                                          widget.index]));
+                                                  .add(
+                                                AddToBookmarks(
+                                                  trackListState
+                                                      .trackLists
+                                                      .message
+                                                      .body
+                                                      .trackList[widget.index],
+                                                ),
+                                              );
+                                              print('added');
+                                              setState(() {
+                                                bookmarked = true;
+                                              });
                                             }
                                           },
                                         );
@@ -130,8 +147,8 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                       return IconButton(
                                         icon: Icon(
                                           bookmarked
-                                              ? Icons.star
-                                              : Icons.star_outline,
+                                              ? Icons.error
+                                              : Icons.error,
                                           color: bookmarked
                                               ? Colors.red
                                               : Colors.grey,

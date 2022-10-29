@@ -50,14 +50,16 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                           builder: (context) => TrackDetailScreen(
                             trackId: state.trackLists.message.body.trackList
                                 .firstWhere((element) =>
-                                    element.track.trackId == list[index])
+                                    element.track.trackId ==
+                                    list[index].track.trackId)
                                 .track
                                 .trackId
                                 .toString(),
                             state: state,
                             index: state.trackLists.message.body.trackList
                                 .indexWhere((element) =>
-                                    element.track.trackId == list[index]),
+                                    element.track.trackId ==
+                                    list[index].track.trackId),
                           ),
                         ),
                       );
