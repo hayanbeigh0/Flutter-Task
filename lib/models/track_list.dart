@@ -1,3 +1,7 @@
+import 'package:hive/hive.dart';
+// part 'bookmark.g.dart';
+
+// @HiveType(typeId: 0)
 class TrackLists {
   TrackLists({
     required this.message,
@@ -76,10 +80,12 @@ class Body {
   }
 }
 
-class TrackList {
+@HiveType(typeId: 2)
+class TrackList extends HiveObject {
   TrackList({
     required this.track,
   });
+  @HiveField(0)
   late final Track track;
 
   TrackList.fromJson(Map<String, dynamic> json) {
@@ -117,25 +123,45 @@ class Track {
     required this.primaryGenres,
     required this.bookmarked,
   });
+  // @HiveField(0)
   late final int trackId;
+  // @HiveField(1)
   late final String trackName;
+  // @HiveField(2)
   late final List<TrackNameTranslationList> trackNameTranslationList;
+  // @HiveField(3)
   late final int trackRating;
+  // @HiveField(4)
   late final int commontrackId;
+  // @HiveField(5)
   late final int instrumental;
+  // @HiveField(6)
   late final int explicit;
+  // @HiveField(7)
   late final int hasLyrics;
+  // @HiveField(8)
   late final int hasSubtitles;
+  // @HiveField(9)
   late final int hasRichsync;
+  // @HiveField(10)
   late final int numFavourite;
+  // @HiveField(11)
   late final int albumId;
+  // @HiveField(12)
   late final String albumName;
+  // @HiveField(13)
   late final int artistId;
+  // @HiveField(14)
   late final String artistName;
+  // @HiveField(15)
   late final String trackShareUrl;
+  // @HiveField(16)
   late final String trackEditUrl;
+  // @HiveField(17)
   late final int restricted;
+  // @HiveField(18)
   late final String updatedTime;
+  // @HiveField(19)
   late final PrimaryGenres primaryGenres;
   late bool bookmarked;
 

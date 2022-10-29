@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../logic/blocs/bookmarks/bookmarks_bloc.dart';
+import '../logic/blocs/internet_bloc/internet_bloc.dart';
 import '/screens/bookmarks_screen.dart';
 import '/screens/track_detail_screen.dart';
 import '/widgets/list_item.dart';
@@ -12,6 +13,7 @@ class TrackListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<InternetBloc>(context).add(CheckInternetEvent());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tracks'),
@@ -19,7 +21,7 @@ class TrackListScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BookmarksScreen(),
+                builder: (context) => const BookmarksScreen(),
               ));
             },
             icon: const Icon(
@@ -28,37 +30,59 @@ class TrackListScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<TrackListBloc, TrackListState>(
-        listener: (context, state) {},
+      body: BlocConsumer<InternetBloc, InternetState>(
+        listener: (context, state) {
+          if (state is InternetDisconnected) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No Internet Connection!')));
+          }
+          if (state is InternetConnected) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Internet Connected!')));
+          }
+        },
         builder: (context, state) {
-          if (state is TrackListLoading) {
+          if (state is InternetDisconnected) {
             return const Center(
-              child: Text('Loading...'),
+              child: Text('No Internet Connection!'),
             );
           }
-          if (state is TrackListLoadingError) {
-            return Center(
-              child: Text(
-                state.errorMessage.toString(),
-              ),
-            );
-          }
-          if (state is TrackListLoaded) {
-            return BlocListener<BookmarksBloc, BookmarksState>(
+          if (state is InternetConnected) {
+            return BlocConsumer<TrackListBloc, TrackListState>(
               listener: (context, state) {},
-              child: ListView.builder(
-                padding: const EdgeInsets.all(10.0),
-                itemCount: state.trackLists.message.body.trackList.length,
-                itemBuilder: (context, index) {
-                  return ListItem(
-                    state: state,
-                    index: index,
+              builder: (context, state) {
+                if (state is TrackListLoading) {
+                  return const Center(
+                    child: Text('Loading...'),
                   );
-                },
-              ),
+                }
+                if (state is TrackListLoadingError) {
+                  return Center(
+                    child: Text(
+                      state.errorMessage.toString(),
+                    ),
+                  );
+                }
+                if (state is TrackListLoaded) {
+                  return BlocListener<BookmarksBloc, BookmarksState>(
+                    listener: (context, state) {},
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(10.0),
+                      itemCount: state.trackLists.message.body.trackList.length,
+                      itemBuilder: (context, index) {
+                        return ListItem(
+                          state: state,
+                          index: index,
+                        );
+                      },
+                    ),
+                  );
+                }
+
+                return Container();
+              },
             );
           }
-
           return Container();
         },
       ),
