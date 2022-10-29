@@ -11,7 +11,7 @@ class BookmarksLoading extends BookmarksState {
 }
 
 class BookmarksLoaded extends BookmarksState {
-  final List<int> loadedBookmarks;
+  final List<TrackList> loadedBookmarks;
   const BookmarksLoaded({
     required this.loadedBookmarks,
   });

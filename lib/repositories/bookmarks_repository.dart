@@ -1,14 +1,14 @@
 import 'package:music_app/models/track_list.dart';
 
 class BookmarksRepository {
-  final List<int> _bookmarkedList = [];
-  addToBookmarks(int bookmark) {
+  final List<TrackList> _bookmarkedList = [];
+  addToBookmarks(TrackList bookmark) {
     _bookmarkedList.add(bookmark);
   }
 
-  removeFromBookmark(int bookmark) {
+  removeFromBookmark(TrackList bookmark) {
     _bookmarkedList.remove(bookmark);
   }
 
-  List<int> get bookmarks => _bookmarkedList;
+  List<TrackList> get bookmarks => _bookmarkedList;
 }

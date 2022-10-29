@@ -27,9 +27,10 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
   List<TrackList> bookmarkedList = [];
   @override
   Widget build(BuildContext context) {
-    var bookmarkBloc = BlocProvider.of<BookmarksBloc>(context);
     BlocProvider.of<TrackDetailBloc>(context)
         .add(FetchTrackDetail(widget.trackId));
+    BlocProvider.of<BookmarksBloc>(context)
+        .add(LoadBookmarks(BookmarksRepository().bookmarks));
     return Scaffold(
       body: BlocBuilder<TrackDetailBloc, TrackDetailState>(
         builder: (context, state) {
@@ -70,51 +71,77 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                 ],
                               ),
                             ),
-                            BlocConsumer<BookmarksBloc, BookmarksState>(
-                              listener: (context, bookmarkState) {
-                                if (bookmarkState is BookmarksLoaded) {
-                                  if (bookmarkState.loadedBookmarks.every((e) =>
-                                      e ==
-                                      state.trackDetails.message.body.track
-                                          .trackId)) {
-                                    bookmarked = true;
-                                  } else {
-                                    bookmarked = false;
-                                  }
-                                }
-                              },
-                              builder: (context, bookmarkState) {
-                                return IconButton(
-                                  icon: Icon(
-                                    bookmarked
-                                        ? Icons.star
-                                        : Icons.star_outline,
-                                    color:
-                                        bookmarked ? Colors.red : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
+                            BlocBuilder<TrackListBloc, TrackListState>(
+                              builder: (context, trackListState) {
+                                if (trackListState is TrackListLoaded) {
+                                  return BlocConsumer<BookmarksBloc,
+                                      BookmarksState>(
+                                    listener: (context, bookmarkState) {
                                       if (bookmarkState is BookmarksLoaded) {
-                                        if (bookmarkState.loadedBookmarks.every(
-                                            (e) =>
-                                                e ==
+                                        if (bookmarkState.loadedBookmarks.any(
+                                            (element) => identical(
                                                 state.trackDetails.message.body
-                                                    .track.trackId)) {
-                                          bookmarkBloc.add(RemoveFromBookmarks(
-                                              state.trackDetails.message.body
-                                                  .track.trackId));
+                                                    .track.trackId,
+                                                element.track.trackId))) {
+                                          bookmarked = true;
+                                          print(bookmarked);
                                         } else {
-                                          bookmarkBloc.add(AddToBookmarks(state
-                                              .trackDetails
-                                              .message
-                                              .body
-                                              .track
-                                              .trackId));
+                                          bookmarked = false;
+                                          print(bookmarked);
                                         }
                                       }
-                                    });
-                                  },
-                                );
+                                    },
+                                    builder: (context, bookmarkState) {
+                                      if (state is BookmarksLoaded) {
+                                        return IconButton(
+                                          icon: Icon(
+                                            bookmarked
+                                                ? Icons.star
+                                                : Icons.star_outline,
+                                            color: bookmarked
+                                                ? Colors.red
+                                                : Colors.grey,
+                                          ),
+                                          onPressed: () {
+                                            if (bookmarked) {
+                                              BlocProvider.of<BookmarksBloc>(
+                                                      context)
+                                                  .add(RemoveFromBookmarks(
+                                                      trackListState
+                                                              .trackLists
+                                                              .message
+                                                              .body
+                                                              .trackList[
+                                                          widget.index]));
+                                            } else {
+                                              BlocProvider.of<BookmarksBloc>(
+                                                      context)
+                                                  .add(AddToBookmarks(
+                                                      trackListState
+                                                              .trackLists
+                                                              .message
+                                                              .body
+                                                              .trackList[
+                                                          widget.index]));
+                                            }
+                                          },
+                                        );
+                                      }
+                                      return IconButton(
+                                        icon: Icon(
+                                          bookmarked
+                                              ? Icons.star
+                                              : Icons.star_outline,
+                                          color: bookmarked
+                                              ? Colors.red
+                                              : Colors.grey,
+                                        ),
+                                        onPressed: () {},
+                                      );
+                                    },
+                                  );
+                                }
+                                return Text('Loading');
                               },
                             )
                           ],

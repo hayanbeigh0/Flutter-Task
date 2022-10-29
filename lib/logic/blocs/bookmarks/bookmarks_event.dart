@@ -3,7 +3,7 @@ part of 'bookmarks_bloc.dart';
 abstract class BookmarksEvent extends Equatable {}
 
 class AddToBookmarks extends BookmarksEvent {
-  final int bookmark;
+  final TrackList bookmark;
 
   AddToBookmarks(this.bookmark);
 
@@ -12,7 +12,7 @@ class AddToBookmarks extends BookmarksEvent {
 }
 
 class RemoveFromBookmarks extends BookmarksEvent {
-  final int bookmark;
+  final TrackList bookmark;
 
   RemoveFromBookmarks(this.bookmark);
 
@@ -21,7 +21,7 @@ class RemoveFromBookmarks extends BookmarksEvent {
 }
 
 class LoadBookmarks extends BookmarksEvent {
-  final List<int> bookmarkList;
+  final List<TrackList> bookmarkList;
 
   LoadBookmarks(this.bookmarkList);
 
