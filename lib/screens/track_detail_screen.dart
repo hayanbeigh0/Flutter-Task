@@ -278,13 +278,14 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: SingleChildScrollView(
-                                            child: Text(
-                                          state.trackLyrics.message.body.lyrics
-                                              .lyricsBody,
-                                          style: const TextStyle(
-                                            fontSize: 15,
+                                          child: Text(
+                                            state.trackLyrics.message.body
+                                                .lyrics.lyricsBody,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                            ),
                                           ),
-                                        )),
+                                        ),
                                       ),
                                     ),
                                   );
