@@ -19,6 +19,7 @@ class TrackDetailScreen extends StatefulWidget {
     required this.fromBookmarkList,
   });
   final String trackId;
+  // ignore: prefer_typing_uninitialized_variables
   final state;
   final int index;
   final bool fromBookmarkList;
@@ -48,10 +49,7 @@ class _TrackDetailScreenState extends State<TrackDetailScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('No Internet Connection!')));
           }
-          // if (state is InternetConnected) {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(content: Text('Internet Connected!')));
-          // }
+          if (state is InternetConnected) {}
         },
         builder: (context, state) {
           if (state is InternetDisconnected) {
@@ -316,12 +314,9 @@ class BookmarksButton extends StatefulWidget {
   final state;
   final bool fromBookmarkList;
   final int index;
-
-  // late TrackListLoaded trackState;
   const BookmarksButton({
     Key? key,
     required this.fromBookmarkList,
-    // required this.trackState,
     required this.state,
     required this.index,
   }) : super(key: key);
@@ -340,7 +335,6 @@ class _BookmarksButtonState extends State<BookmarksButton> {
         BlocProvider.of<BookmarksBloc>(context)
             .add(LoadBookmarks(BookmarksRepository().bookmarks));
         if (trackListState is TrackListLoaded) {
-          // widget.trackState = trackListState;
           return BlocConsumer<BookmarksBloc, BookmarksState>(
             listener: (context, bookmarkState) {},
             builder: (context, bookmarkState) {

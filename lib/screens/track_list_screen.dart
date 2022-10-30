@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../logic/blocs/bookmarks/bookmarks_bloc.dart';
 import '../logic/blocs/internet_bloc/internet_bloc.dart';
 import '/screens/bookmarks_screen.dart';
-import '/screens/track_detail_screen.dart';
 import '/widgets/list_item.dart';
 
 import '../logic/blocs/track_list/track_list_bloc.dart';

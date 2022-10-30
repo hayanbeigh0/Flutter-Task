@@ -70,10 +70,10 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                                 ),
                               ),
                             );
+                            // ignore: use_build_context_synchronously
                             BlocProvider.of<BookmarksBloc>(context).add(
                                 LoadBookmarks(BookmarksRepository().bookmarks));
                             setState(() {});
-                            print(state.loadedBookmarks.length);
                           },
                           child: Card(
                             elevation: 4,
